@@ -35,9 +35,12 @@ async function onSubmitForm(e) {
   }
   clearGallery();
   await render.markupImages(images);
-  Notify.success(`Hooray! We found ${imagesApiService.totalHits} images.`);
+  if (images.length > 0) {
+    Notify.success(`Hooray! We found ${imagesApiService.totalHits} images.`);
+  }
   shownBtnLoadMore();
   lightbox.refresh();
+  smoothScrolling();
 }
 
 async function onLoadMore() {
@@ -53,6 +56,7 @@ async function onLoadMore() {
   }
   console.log(searchCard.length);
   console.log(imagesApiService.totalHits);
+  smoothScrolling();
 }
 
 function clearGallery() {
@@ -65,21 +69,14 @@ function shownBtnLoadMore() {
   elements.refs.loadMoreBtn.classList.remove('is-hidden');
 }
 
-// async function onSubmitForm(e) {
-//   e.preventDefault();
-//   //   const valueInput = elements.refs.input.value;
-//   const valueInput = e.currentTarget.elements.searchQuery.value;
+function smoothScrolling() {
+  const { height: cardHeight } =
+    elements.refs.gallery.firstElementChild.getBoundingClientRect();
 
-//   const images = await imagesApi.getAllImages(valueInput);
-//   if (images.length === 0) {
-//     Notify.failure(
-//       'Sorry, there are no images matching your search query. Please try again.'
-//     );
-//   }
-//   const markup = await render.markupImages(images);
-//   return markup;
-// }
+  console.log(cardHeight);
 
-// async function onLoadMore() {
-//   const moreImages = await imagesApi.getAllImages(valueInput);
-// }
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
