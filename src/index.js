@@ -10,7 +10,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 elements.refs.searchForm.addEventListener('submit', onSubmitForm);
 elements.refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-const lightbox = new SimpleLightbox('.img-container a', {
+const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
@@ -20,7 +20,7 @@ const imagesApiService = new ImagesApiService();
 async function onSubmitForm(e) {
   e.preventDefault();
   ishidenBtnLoadMore();
-  imagesApiService.query = e.currentTarget.elements.searchQuery.value;
+  imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   if (imagesApiService.query === '') {
     return Notify.info('Please enter your search query');
   }
@@ -35,6 +35,7 @@ async function onSubmitForm(e) {
   }
   clearGallery();
   await render.markupImages(images);
+  Notify.success(`Hooray! We found ${imagesApiService.totalHits} images.`);
   shownBtnLoadMore();
   lightbox.refresh();
 }
