@@ -1,20 +1,15 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import elements from './refs';
-import imagesApi from './fetch-services';
-import render from './markupServices';
+import render from './markup-services';
 import ImagesApiService from './fetch-services';
-// import lightbox from './simple-lightBox';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import simpleLightbox from './simple-lightBox';
+import smoothScrolling from './smooth-scrol';
 
 elements.refs.searchForm.addEventListener('submit', onSubmitForm);
 elements.refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-// let valueInput = '';
+simpleLightbox.lightbox;
+
 const imagesApiService = new ImagesApiService();
 
 async function onSubmitForm(e) {
@@ -38,15 +33,17 @@ async function onSubmitForm(e) {
   if (images.length > 0) {
     Notify.success(`Hooray! We found ${imagesApiService.totalHits} images.`);
   }
-  shownBtnLoadMore();
-  lightbox.refresh();
+  if (images.length >= 40) {
+    shownBtnLoadMore();
+  }
+  simpleLightbox.refresh();
   smoothScrolling();
 }
 
 async function onLoadMore() {
   const moreImages = await imagesApiService.getAllImages();
   await render.markupImages(moreImages);
-  lightbox.refresh();
+  simpleLightbox.refresh();
   const searchCard = document.querySelectorAll('.photo-card');
   if (searchCard.length === imagesApiService.totalHits) {
     ishidenBtnLoadMore();
@@ -67,16 +64,4 @@ function ishidenBtnLoadMore() {
 }
 function shownBtnLoadMore() {
   elements.refs.loadMoreBtn.classList.remove('is-hidden');
-}
-
-function smoothScrolling() {
-  const { height: cardHeight } =
-    elements.refs.gallery.firstElementChild.getBoundingClientRect();
-
-  console.log(cardHeight);
-
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
 }

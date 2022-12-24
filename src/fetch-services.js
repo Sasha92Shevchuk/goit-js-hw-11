@@ -38,25 +38,4 @@ export default class ImagesApiService {
   resetPage() {
     this.page = 1;
   }
-
-  // get totalHits() {
-  //   return this.totalHits;
-  // }
-  // set totalHits(namber) {
-  //   this.totalHits = namber;
-  // }
 }
-
-// async function getAllImages(name) {
-//   try {
-//     const res = await instanceAPI.get(
-//       `?per_page=40&key=${API_KEY}&q=${name}&image_type=photo&orientation=horizontal&safesearch=true`
-//     );
-//     const arrayImages = res.data.hits;
-//     return arrayImages;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// export default { getAllImages };
