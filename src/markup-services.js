@@ -1,8 +1,8 @@
 import elements from './refs';
 
-async function markupImages(cards) {
+function markupImages(cards) {
   //   elements.refs.gallery.innerHTML = '';
-  const markupImages = await cards
+  const markupImages = cards
     .map(
       card => `<div class="photo-card">
       <a href="${card.largeImageURL}">
