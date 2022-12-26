@@ -16,10 +16,10 @@ export default class ImagesApiService {
         &orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
       );
       const arrayImages = res.data.hits;
-      console.log(arrayImages.length);
+      // console.log(arrayImages.length);
       this.totalHits = res.data.totalHits;
       this.incrementPage();
-      // console.log(this);
+      console.log(this);
 
       return arrayImages;
     } catch (error) {
