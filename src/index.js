@@ -38,7 +38,11 @@ async function onSubmitForm(e) {
   //   shownBtnLoadMore();
   // }
   simpleLightbox.refresh();
-  smoothScrolling();
+
+  if (elements.refs.gallery.children.length !== 0) {
+    smoothScrolling();
+  }
+
   addObserveEl();
 }
 async function onLoadMore() {
