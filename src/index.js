@@ -34,11 +34,12 @@ async function onSubmitForm(e) {
   if (images.length > 0) {
     Notify.success(`Hooray! We found ${imagesApiService.totalHits} images.`);
   }
-  if (images.length >= 40) {
-    shownBtnLoadMore();
-  }
+  // if (images.length >= 40) {
+  //   shownBtnLoadMore();
+  // }
   simpleLightbox.refresh();
   smoothScrolling();
+  addObserveEl();
 }
 async function onLoadMore() {
   const moreImages = await imagesApiService.getAllImages();
@@ -51,9 +52,9 @@ async function onLoadMore() {
       "We're sorry, but you've reached the end of search results."
     );
   }
-  // console.log(searchCard.length);
-  // console.log(imagesApiService.totalHits);
+
   smoothScrolling();
+  addObserveEl();
 }
 
 function clearGallery() {
@@ -65,36 +66,69 @@ function ishidenBtnLoadMore() {
 function shownBtnLoadMore() {
   elements.refs.loadMoreBtn.classList.remove('is-hidden');
 }
-
-// window.addEventListener('scroll', onScrollLoad);
-
-async function onScrollLoad(e) {
-  const body = document.body;
-  const html = document.documentElement;
-
-  const totalHeight = Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
-  // console.log(totalHeight);
-  // console.log(window.scrollY, window.innerHeight);
-  const pixelsToBottom = totalHeight - window.innerHeight - window.scrollY;
-  // console.log(pixelsToBottom);
-  if (pixelsToBottom > 450) {
-    return;
-  } else {
-    const moreImages = await imagesApiService.getAllImages();
-    render.markupImages(moreImages);
-    simpleLightbox.refresh();
-    const searchCard = document.querySelectorAll('.photo-card');
-    if (searchCard.length === imagesApiService.totalHits) {
-      return Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-    }
-    smoothScrolling();
+function addObserveEl() {
+  const lastCard = document.querySelector('.gallery').lastElementChild;
+  if (lastCard) {
+    observer.observe(lastCard);
   }
 }
+
+// infinite scroll
+
+// const options = {
+//   // threshold: 0.5,
+//   rootMargin: '200px',
+// };
+
+const callback = async ([entry], observer) => {
+  if (entry.isIntersecting) {
+    observer.unobserve(entry.target);
+    onLoadMore();
+  }
+};
+
+const observer = new IntersectionObserver(callback, { rootMargin: '200px' });
+
+// скрол через слухача, не допрацьовано обробку помилки
+
+// const throttled = throttle(onScrollLoad, 300);
+// window.addEventListener('scroll', throttled);
+
+// async function onScrollLoad(e) {
+//   let totalLength = 0;
+//   let totalGet = 1;
+//   const body = document.body;
+//   const html = document.documentElement;
+
+//   const totalHeight = Math.max(
+//     body.scrollHeight,
+//     body.offsetHeight,
+//     html.clientHeight,
+//     html.scrollHeight,
+//     html.offsetHeight
+//   );
+//   // console.log(totalHeight);
+//   // console.log(window.scrollY, window.innerHeight);
+//   const pixelsToBottom = totalHeight - window.innerHeight - window.scrollY;
+//   // console.log(pixelsToBottom);
+//   if (pixelsToBottom < 450) {
+//     if (totalLength >= totalGet) {
+//       return;
+//     }
+//     const moreImages = await imagesApiService.getAllImages();
+
+//     render.markupImages(moreImages);
+//     simpleLightbox.refresh();
+//     const searchCard = document.querySelectorAll('.photo-card');
+//     if (searchCard.length >= imagesApiService.totalHits) {
+//       return Notify.info(
+//         "We're sorry, but you've reached the end of search results."
+//       );
+//     }
+//     // console.log(searchCard.length);
+//     // console.log(imagesApiService.totalHits);
+//     smoothScrolling();
+//     totalLength = searchCard.length;
+//     totalGet = imagesApiService.totalHits;
+//   }
+// }
