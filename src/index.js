@@ -16,6 +16,7 @@ const imagesApiService = new ImagesApiService();
 async function onSubmitForm(e) {
   e.preventDefault();
   ishidenBtnLoadMore();
+  elements.refs.gallery.innerHTML = '';
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   if (imagesApiService.query === '') {
     return Notify.info('Please enter your search query');
@@ -38,10 +39,6 @@ async function onSubmitForm(e) {
   //   shownBtnLoadMore();
   // }
   simpleLightbox.refresh();
-
-  if (elements.refs.gallery.children.length !== 0) {
-    smoothScrolling();
-  }
 
   addObserveEl();
 }
